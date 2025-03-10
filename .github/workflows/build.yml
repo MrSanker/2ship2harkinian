@@ -1,0 +1,33 @@
+name: aranjuez
+
+on: 
+  push:
+    branches:
+      - intel-celeron-purgatory
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: windows-latest # ubuntu-latest si acaso
+
+    steps:
+      - name: clonar la repo y eso
+        uses: actions/checkout@v4
+
+      - name: deps
+        run: |
+          sudo apt update
+          sudo apt install ninja-build cmake gcc g++ libogg-dev -y  # Instala herramientas necesarias
+
+      - name: cmake config
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G Ninja
+
+      - name: ninja
+        run: |
+          cd build
+          ninja
