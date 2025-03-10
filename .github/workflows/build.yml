@@ -10,16 +10,15 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest # ubuntu-latest si acaso
+    runs-on: windows-latest
 
     steps:
       - name: clonar la repo y eso
         uses: actions/checkout@v4
 
-      - name: deps
+      - name: deps2
         run: |
-          sudo apt update
-          sudo apt install ninja-build cmake gcc g++ libogg-dev -y  # Instala herramientas necesarias
+          choco install ninja cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
 
       - name: cmake config
         run: |
