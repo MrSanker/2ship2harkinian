@@ -449,18 +449,18 @@ void BenMenu::AddEnhancements() {
         .CVar("gEnhancements.Camera.FirstPerson.SensitivityX")
         .Options(FloatSliderOptions()
                      .Tooltip("Adjusts the Sensitivity of the X Axis in First Person Mode.")
-                     .Min(0.01f)
-                     .Max(2.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage());
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(2.0f));
     AddWidget(path, "Y Axis Sensitivity: %.0f%%", WIDGET_CVAR_SLIDER_FLOAT)
         .CVar("gEnhancements.Camera.FirstPerson.SensitivityY")
         .Options(FloatSliderOptions()
                      .Tooltip("Adjusts the Sensitivity of the Y Axis in First Person Mode.")
-                     .Min(0.01f)
-                     .Max(2.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage());
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(2.0f));
     AddWidget(path, "Gyro Aiming", WIDGET_CVAR_CHECKBOX)
         .CVar("gEnhancements.Camera.FirstPerson.GyroEnabled")
         .Options(CheckboxOptions().Tooltip("Enables Gyro Aiming in First Person Mode."));
@@ -476,19 +476,19 @@ void BenMenu::AddEnhancements() {
         .CVar("gEnhancements.Camera.FirstPerson.GyroSensitivityX")
         .Options(FloatSliderOptions()
                      .Tooltip("Adjusts the Sensitivity of the X Axis of the Gyro in First Person Mode.")
-                     .Min(0.01f)
-                     .Max(2.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage())
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(2.0f))
         .PreFunc([](WidgetInfo& info) { info.isHidden = mBenMenu->disabledMap.at(DISABLE_FOR_GYRO_OFF).active; });
     AddWidget(path, "Gyro Y Axis Sensitivity: %.0f%%", WIDGET_CVAR_SLIDER_FLOAT)
         .CVar("gEnhancements.Camera.FirstPerson.GyroSensitivityY")
         .Options(FloatSliderOptions()
                      .Tooltip("Adjusts the Sensitivity of the Y Axis of the Gyro in First Person Mode.")
-                     .Min(0.01f)
-                     .Max(2.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage())
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(2.0f))
         .PreFunc([](WidgetInfo& info) { info.isHidden = mBenMenu->disabledMap.at(DISABLE_FOR_GYRO_OFF).active; });
     AddWidget(path, "Right Stick Aiming", WIDGET_CVAR_CHECKBOX)
         .CVar("gEnhancements.Camera.FirstPerson.RightStickEnabled")
@@ -515,19 +515,19 @@ void BenMenu::AddEnhancements() {
         .PreFunc([](WidgetInfo& info) { info.isHidden = mBenMenu->disabledMap.at(DISABLE_FOR_RIGHT_STICK_OFF).active; })
         .Options(FloatSliderOptions()
                      .Tooltip("Adjusts the Sensitivity of the X Axis of the Right Stick in First Person Mode.")
-                     .Min(0.01f)
-                     .Max(2.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage());
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(2.0f));
     AddWidget(path, "Right Stick Y Axis Sensitivity: %.0f%%", WIDGET_CVAR_SLIDER_FLOAT)
         .CVar("gEnhancements.Camera.FirstPerson.RightStickSensitivityY")
         .PreFunc([](WidgetInfo& info) { info.isHidden = mBenMenu->disabledMap.at(DISABLE_FOR_RIGHT_STICK_OFF).active; })
         .Options(FloatSliderOptions()
                      .Tooltip("Adjusts the Sensitivity of the Y Axis of the Right Stick in First Person Mode.")
-                     .Min(0.01f)
-                     .Max(2.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage());
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(2.0f));
 
     path.column = 2;
     AddWidget(path, "Cameras", WIDGET_SEPARATOR_TEXT);
@@ -593,7 +593,7 @@ void BenMenu::AddEnhancements() {
             }
         })
         .Options(CheckboxOptions().Tooltip("Inverts the Camera Y Axis").DefaultValue(true));
-    AddWidget(path, "Third-Person Horizontal Sensitivity: %.0f", WIDGET_CVAR_SLIDER_FLOAT)
+    AddWidget(path, "Third-Person Camera\nHorizontal Sensitivity: %.0f%%", WIDGET_CVAR_SLIDER_FLOAT)
         .CVar("gEnhancements.Camera.RightStick.CameraSensitivity.X")
         .PreFunc([](WidgetInfo& info) {
             if (mBenMenu->disabledMap.at(DISABLE_FOR_CAMERAS_OFF).active) {
@@ -603,11 +603,11 @@ void BenMenu::AddEnhancements() {
         .Options(FloatSliderOptions()
                      .Tooltip("Adjust the Sensitivity of the x axis when in Third Person.")
                      .Format("%.0f%%")
-                     .Min(0.01f)
-                     .Max(5.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage());
-    AddWidget(path, "Third-Person Vertical Sensitivity: %.0f", WIDGET_CVAR_SLIDER_FLOAT)
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(5.0f));
+    AddWidget(path, "Third-Person Camera\nVertical Sensitivity: %.0f%%", WIDGET_CVAR_SLIDER_FLOAT)
         .CVar("gEnhancements.Camera.RightStick.CameraSensitivity.Y")
         .PreFunc([](WidgetInfo& info) {
             if (mBenMenu->disabledMap.at(DISABLE_FOR_CAMERAS_OFF).active) {
@@ -617,10 +617,10 @@ void BenMenu::AddEnhancements() {
         .Options(FloatSliderOptions()
                      .Tooltip("Adjust the Sensitivity of the x axis when in Third Person.")
                      .Format("%.0f%%")
-                     .Min(0.01f)
-                     .Max(5.0f)
                      .DefaultValue(1.0f)
-                     .IsPercentage());
+                     .IsPercentage()
+                     .Min(0.01f)
+                     .Max(5.0f));
     AddWidget(path, "Enable Roll (6\xC2\xB0 of Freedom)", WIDGET_CVAR_CHECKBOX)
         .CVar("gEnhancements.Camera.DebugCam.6DOF")
         .PreFunc([](WidgetInfo& info) { info.isHidden = mBenMenu->disabledMap.at(DISABLE_FOR_DEBUG_CAM_OFF).active; })
@@ -633,10 +633,10 @@ void BenMenu::AddEnhancements() {
         .Options(FloatSliderOptions()
                      .Tooltip("Adjusts the speed of the Camera.")
                      .Format("%.0f%%")
-                     .Min(0.1f)
-                     .Max(3.0f)
                      .DefaultValue(0.5f)
-                     .IsPercentage());
+                     .IsPercentage()
+                     .Min(0.1f)
+                     .Max(3.0f));
 
     path.column = 3;
     AddWidget(path, "Mouse", WIDGET_SEPARATOR_TEXT);
@@ -1029,6 +1029,9 @@ void BenMenu::AddEnhancements() {
             "Disables Black Bar Letterboxes during cutscenes and Z-targeting\nNote: there may be "
             "minor visual glitches that were covered up by the black bars\nPlease disable this "
             "setting before reporting a bug."));
+    AddWidget(path, "Enemy Health Bars", WIDGET_CVAR_CHECKBOX)
+        .CVar("gEnhancements.Graphics.EnemyHealthBars")
+        .Options(CheckboxOptions().Tooltip("Renders a health bar for enemies and bosses when Z-Targeted"));
     AddWidget(path, "Unstable", WIDGET_SEPARATOR_TEXT).Options(WidgetOptions{ .color = Colors::Orange });
     AddWidget(path, "Disable Scene Geometry Distance Check", WIDGET_CVAR_CHECKBOX)
         .CVar("gEnhancements.Graphics.DisableSceneGeometryDistanceCheck")
@@ -1369,6 +1372,13 @@ void BenMenu::AddEnhancements() {
     AddWidget(path, "Popout Settings", WIDGET_WINDOW_BUTTON)
         .CVar("gWindows.ItemTrackerSettings")
         .WindowName("Item Tracker Settings");
+
+    // Audio Editor
+    path = { "Enhancements", "Audio Editor", 1 };
+    AddSidebarEntry("Enhancements", "Audio Editor", 1);
+    AddWidget(path, "Popout Audio Editor", WIDGET_WINDOW_BUTTON)
+        .CVar("gWindows.AudioEditor")
+        .WindowName("Audio Editor");
 }
 
 void BenMenu::AddDevTools() {

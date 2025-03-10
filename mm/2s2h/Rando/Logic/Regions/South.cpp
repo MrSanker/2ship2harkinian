@@ -158,6 +158,7 @@ static RegisterShipInitFunc initFunc([]() {
     };
     Regions[RR_GORMAN_TRACK] = RandoRegion{ .sceneId = SCENE_KOEPONARACE,
         .checks = {
+            CHECK(RC_GORMAN_MILK_PURCHASE, CAN_AFFORD(RC_GORMAN_MILK_PURCHASE)),
             // TODO : Also apparently can be obtained using a trick with Goron mask and Bombs. Add trick later here
             CHECK(RC_GORMAN_TRACK_LARGE_CRATE, RANDO_EVENTS[RE_COWS_FROM_ALIENS]), // Night 2 only, after defending cows from aliens.
             CHECK(RC_GORMAN_TRACK_GARO_MASK, CAN_PLAY_SONG(EPONA)),
@@ -298,6 +299,7 @@ static RegisterShipInitFunc initFunc([]() {
             EVENT(RE_ACCESS_SPRING_WATER, true),
             EVENT(RE_ACCESS_BEANS_REFILL, CAN_BE_DEKU && HAS_ITEM(ITEM_MAGIC_BEANS)),
             EVENT(RE_SOUTHERN_SWAMP_KILL_OCTOROK, (HAS_ITEM(ITEM_BOW) || HAS_ITEM(ITEM_HOOKSHOT) || CAN_BE_ZORA)),
+            EVENT(RE_ACCESS_FROG_BLUE, true),
         },
         .oneWayEntrances = {
             ENTRANCE(SOUTHERN_SWAMP_POISONED, 9), // From river in Ikana
@@ -362,7 +364,7 @@ static RegisterShipInitFunc initFunc([]() {
         },
         .exits = { //     TO                                         FROM
             EXIT(ENTRANCE(SOUTHERN_SWAMP_POISONED, 2),      ENTRANCE(WOODFALL, 0), true),
-            EXIT(ENTRANCE(WOODFALL_TEMPLE, 0),              ENTRANCE(WOODFALL, 1), CAN_BE_DEKU && (CAN_PLAY_SONG(SONATA) || RANDO_SAVE_OPTIONS[RO_ACCESS_DUNGEONS] == RO_ACCESS_DUNGEONS_FORM_ONLY)),
+            EXIT(ENTRANCE(WOODFALL_TEMPLE, 0),              ENTRANCE(WOODFALL, 1), CanAccessDungeon(DUNGEON_INDEX_WOODFALL_TEMPLE)),
             EXIT(ENTRANCE(FAIRY_FOUNTAIN, 1),               ENTRANCE(WOODFALL, 2), CAN_BE_DEKU),
             EXIT(ENTRANCE(WOODFALL_TEMPLE, 2),              ENTRANCE(WOODFALL, 3), RANDO_EVENTS[RE_CLEARED_WOODFALL_TEMPLE]),
         },

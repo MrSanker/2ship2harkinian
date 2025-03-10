@@ -1,5 +1,6 @@
 #include "ActorBehavior.h"
 #include <libultraship/libultraship.h>
+#include "2s2h/ActorExtension/ActorExtension.h"
 
 extern "C" {
 #include "variables.h"
@@ -27,8 +28,32 @@ void MiscVanillaBehaviorHandler(GIVanillaBehavior id, bool* should, void* option
     }
 }
 
+ActorExtensionId randoCheckIdActorExt = 0;
+
+RandoCheckId Rando::ActorBehavior::GetActorRandoCheckId(Actor* actor) {
+    RandoCheckId* actorRandoCheckId = (RandoCheckId*)ActorExtension_Get(actor, randoCheckIdActorExt);
+    if (actorRandoCheckId == NULL) {
+        return RC_UNKNOWN;
+    }
+
+    return *actorRandoCheckId;
+}
+
+void Rando::ActorBehavior::SetActorRandoCheckId(Actor* actor, RandoCheckId rc) {
+    RandoCheckId* actorRandoCheckId = (RandoCheckId*)ActorExtension_Get(actor, randoCheckIdActorExt);
+
+    if (actorRandoCheckId == NULL) {
+        assert(false);
+    } else {
+        *actorRandoCheckId = rc;
+    }
+}
+
 // Entry point for the module, run once on game boot
 void Rando::ActorBehavior::Init() {
+    if (randoCheckIdActorExt == 0) {
+        randoCheckIdActorExt = ActorExtension_CreateForAll(sizeof(RandoCheckId));
+    }
 }
 
 void Rando::ActorBehavior::OnFileLoad() {
@@ -57,6 +82,7 @@ void Rando::ActorBehavior::OnFileLoad() {
     Rando::ActorBehavior::InitEnFsnBehavior();
     Rando::ActorBehavior::InitEnFuBehavior();
     Rando::ActorBehavior::InitEnGamelupyBehavior();
+    Rando::ActorBehavior::InitEnGb2Behavior();
     Rando::ActorBehavior::InitEnGegBehavior();
     Rando::ActorBehavior::InitEnGgBehavior();
     Rando::ActorBehavior::InitEnGinkoBehavior();
@@ -67,6 +93,7 @@ void Rando::ActorBehavior::OnFileLoad() {
     Rando::ActorBehavior::InitEnHgBehavior();
     Rando::ActorBehavior::InitEnInBehavior();
     Rando::ActorBehavior::InitEnItem00Behavior();
+    Rando::ActorBehavior::InitEnJgameTsnBehavior();
     Rando::ActorBehavior::InitEnJgBehavior();
     Rando::ActorBehavior::InitEnJsBehavior();
     Rando::ActorBehavior::InitEnKgyBehavior();
@@ -100,6 +127,7 @@ void Rando::ActorBehavior::OnFileLoad() {
     Rando::ActorBehavior::InitItemBHeartBehavior();
     Rando::ActorBehavior::InitObjKibakoBehavior();
     Rando::ActorBehavior::InitObjMoonStoneBehavior();
+    Rando::ActorBehavior::InitObjSnowballBehavior();
     Rando::ActorBehavior::InitObjTaruBehavior();
     Rando::ActorBehavior::InitObjTsuboBehavior();
     Rando::ActorBehavior::InitObjWarpstoneBehavior();

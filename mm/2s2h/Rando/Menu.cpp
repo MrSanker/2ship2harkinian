@@ -18,7 +18,10 @@ std::unordered_map<int32_t, const char*> logicOptions = {
 
 std::unordered_map<int32_t, const char*> accessDungeonOptions = {
     { RO_ACCESS_DUNGEONS_FORM_AND_SONG, "Requires Transformation & Song" },
-    { RO_ACCESS_DUNGEONS_FORM_ONLY, "Requires Transformation" },
+    { RO_ACCESS_DUNGEONS_FORM_OR_SONG, "Requires Transformation or Song" },
+    { RO_ACCESS_DUNGEONS_FORM_ONLY, "Requires Only Transformation" },
+    { RO_ACCESS_DUNGEONS_SONG_ONLY, "Requires Only Song" },
+    { RO_ACCESS_DUNGEONS_OPEN, "Open" },
 };
 
 std::unordered_map<int32_t, const char*> accessTrialsOptions = {
@@ -138,8 +141,15 @@ static void DrawLogicConditionsTab() {
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("randoLogicColumn2", ImVec2(columnWidth, halfHeight));
+
     UIWidgets::CVarCombobox("Dungeon Access", Rando::StaticData::Options[RO_ACCESS_DUNGEONS].cvar,
                             accessDungeonOptions);
+    UIWidgets::Tooltip("Dungeon access requirements:\n\n"
+                       "Requires Transformation & Song - Requires both the correct form and the song (Vanilla).\n\n"
+                       "Requires Transformation or Song - Requires either the correct form or the song.\n\n"
+                       "Requires Only Transformation - Requires only the correct form.\n\n"
+                       "Requires Only Song - Requires only the correct song.\n\n"
+                       "Open - Dungeons will be open with no requirements.");
     UIWidgets::CVarSliderInt("Majora Access Remains Required",
                              Rando::StaticData::Options[RO_ACCESS_MAJORA_REMAINS_COUNT].cvar,
                              IntSliderOptions().Min(0).Max(4).DefaultValue(0));
@@ -175,6 +185,7 @@ static void DrawLocationsTab() {
     CVarCheckbox("Shuffle Pot Drops", Rando::StaticData::Options[RO_SHUFFLE_POT_DROPS].cvar);
     CVarCheckbox("Shuffle Crate Drops", Rando::StaticData::Options[RO_SHUFFLE_CRATE_DROPS].cvar);
     CVarCheckbox("Shuffle Barrel Drops", Rando::StaticData::Options[RO_SHUFFLE_BARREL_DROPS].cvar);
+    CVarCheckbox("Shuffle Snowball Drops", Rando::StaticData::Options[RO_SHUFFLE_SNOWBALL_DROPS].cvar);
     CVarCheckbox("Shuffle Hive Drops", "gPlaceholderBool",
                  CheckboxOptions({ { .disabled = true, .disabledTooltip = "Coming Soon" } }));
     CVarCheckbox("Shuffle Freestanding Items", Rando::StaticData::Options[RO_SHUFFLE_FREESTANDING_ITEMS].cvar);
