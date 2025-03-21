@@ -9,6 +9,11 @@
 void LoadGuiTextures();
 std::string convertEnumToReadableName(const std::string& input);
 extern std::vector<const char*> digitList;
+extern std::vector<int16_t> orderedInventoryItemList;
+extern const char* fairyIcons[4];
+extern std::map<int16_t, int16_t> questToItemMap;
+extern ImVec4 Ship_SongColors(int16_t itemID);
+extern ImVec4 Ship_DungeonKeyColors(int16_t dungeonIndex);
 
 extern "C" {
 #endif
@@ -27,6 +32,7 @@ f32 Ship_GetCharFontWidthNES(u8 character);
 TexturePtr Ship_GetCharFontTextureNES(u8 character);
 void Ship_Random_Seed(u32 seed);
 s32 Ship_Random(s32 min, s32 max);
+int16_t findQuestByItem(int16_t itemId);
 
 #ifdef __cplusplus
 }

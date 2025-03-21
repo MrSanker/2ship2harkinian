@@ -8,15 +8,8 @@ extern std::shared_ptr<ItemTrackerWindow> mItemTrackerWindow;
 
 using namespace BenGui;
 
-void ItemTrackerSettingsWindow::UpdateElement() {
-}
-
-void ItemTrackerSettingsWindow::InitElement() {
-}
-
 static const char* windowTypes[2] = { "Floating", "Window" };
-static const char* displayTypes[3] = { "Hidden", "Main Window", "Separate" };
-static const char* displayModes[2] = { "Always", "Combo Button Hold" };
+static const char* displayTypes[4] = { "Hidden", "Main Window", "Sub Window", "Separate" };
 
 void ItemTrackerSettingsWindow::DrawElement() {
     ImGui::SetNextWindowSize(ImVec2(733, 472), ImGuiCond_FirstUseEver);
@@ -25,69 +18,50 @@ void ItemTrackerSettingsWindow::DrawElement() {
         ImGui::EndChild();
         return;
     }
+    auto menuThemeIndex =
+        static_cast<UIWidgets::Colors>(CVarGetInteger("gSettings.Menu.Theme", UIWidgets::Colors::LightBlue));
 
-    if (CVarGetInteger("gWindows.ItemTracker", 0)) {
-        UIWidgets::WindowButton("Hide Item Tracker", "gWindows.ItemTracker", mItemTrackerWindow,
-                                { .size = UIWidgets::Sizes::Inline });
-    } else {
-        UIWidgets::WindowButton("Show Item Tracker", "gWindows.ItemTracker", mItemTrackerWindow,
-                                { .size = UIWidgets::Sizes::Inline });
+    ImGui::SeparatorText("Item Tracker Settings");
+    UIWidgets::WindowButton("Show Item Tracker", "gWindows.ItemTracker", mItemTrackerWindow,
+                            { .size = UIWidgets::Sizes::Inline, .color = menuThemeIndex });
+
+    ImGui::BeginTable("Settings Table", 2);
+    ImGui::TableSetupColumn("Options", ImGuiTableColumnFlags_WidthFixed, (ImGui::GetContentRegionAvail().x / 2));
+
+    ImGui::TableNextColumn();
+    ImGui::SeparatorText("Options");
+    for (auto& options : itemTrackerSettingsOptions) {
+        if (options.first == "Condensed Keys") {
+            ImGui::BeginDisabled(!CVarGetInteger("ItemTracker.MapCompass", 0));
+            if (UIWidgets::CVarCheckbox(options.first, options.second, { .color = menuThemeIndex })) {
+                UpdateTrackerSettings();
+            }
+            ImGui::EndDisabled();
+        } else {
+            if (UIWidgets::CVarCheckbox(options.first, options.second, { .color = menuThemeIndex })) {
+                UpdateTrackerSettings();
+            }
+        }
+    }
+    if (UIWidgets::CVarSliderInt(
+            "Icon Size", "ItemTracker.IconSize",
+            { .showButtons = true, .min = 30, .max = 56, .defaultValue = 32, .color = menuThemeIndex })) {
+        UpdateTrackerSettings();
+    }
+    if (UIWidgets::CVarSliderInt(
+            "Icon Spacing", "ItemTracker.IconSpacing",
+            { .showButtons = true, .min = -2, .max = 10, .defaultValue = 2, .color = menuThemeIndex })) {
+        UpdateTrackerSettings();
+    }
+    ImGui::TableNextColumn();
+    ImGui::SeparatorText("Window Layouts");
+    for (auto& options : itemTrackerPanelOptions) {
+        if (UIWidgets::CVarCombobox(options.first, options.second, displayTypes,
+                                    { .defaultIndex = 1, .color = menuThemeIndex })) {
+            UpdateTrackerWindows();
+        }
     }
 
-    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, { 8.0f, 8.0f });
-    ImGui::BeginTable("itemTrackerSettingsTable", 2, ImGuiTableFlags_BordersH | ImGuiTableFlags_BordersV);
-    ImGui::TableSetupColumn("General settings", ImGuiTableColumnFlags_WidthStretch, 200.0f);
-    ImGui::TableSetupColumn("Section settings", ImGuiTableColumnFlags_WidthStretch, 200.0f);
-    ImGui::TableHeadersRow();
-    ImGui::TableNextRow();
-    ImGui::TableNextColumn();
-    ImGui::Text("BG Color");
-    ImGui::SameLine();
-
-    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-
-    ImGui::ColorEdit4("BG Color", (float*)mItemTrackerWindow->GetBgColorPtr(),
-                      ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoLabel);
-
-    UIWidgets::Combobox("Window Type", mItemTrackerWindow->GetWindowTypePtr(), windowTypes);
-    UIWidgets::Checkbox("Enable Dragging", mItemTrackerWindow->GetIsDraggablePtr());
-    UIWidgets::Checkbox("Only enable while paused", mItemTrackerWindow->GetOnlyShowPausedPtr());
-
-    UIWidgets::SliderFloat("Icon size : %.0fpx", mItemTrackerWindow->GetIconSizePtr(),
-                           { .format = "%.0f", .step = 1.0f, .min = 0.0f, .max = 128.0f });
-    UIWidgets::SliderFloat("Icon margins : %.0fpx", mItemTrackerWindow->GetIconSpacingPtr(),
-                           { .format = "%.0f", .step = 1.0f, .min = -5.0f, .max = 50.0f });
-    UIWidgets::SliderFloat("Text size : %.0fpx", mItemTrackerWindow->GetTextSizePtr(),
-                           { .format = "%.0f", .step = 1.0f, .min = 1.0f, .max = 30.0f });
-    UIWidgets::SliderFloat("Text Offset : %0.fpx", mItemTrackerWindow->GetTextOffsetPtr(),
-                           { .format = "%.0f", .step = 1.0f, .min = 0.0f, .max = 40.0f });
-
-    ImGui::TableNextColumn();
-
-    UIWidgets::Combobox("Inventory", mItemTrackerWindow->GetDrawModePtr(SECTION_INVENTORY), displayTypes);
-    UIWidgets::Combobox("Masks", mItemTrackerWindow->GetDrawModePtr(SECTION_MASKS), displayTypes);
-    UIWidgets::Combobox("Equipment", mItemTrackerWindow->GetDrawModePtr(SECTION_EQUIPMENT), displayTypes);
-    UIWidgets::Combobox("Miscellaneous", mItemTrackerWindow->GetDrawModePtr(SECTION_MISC), displayTypes);
-    UIWidgets::Combobox("Songs", mItemTrackerWindow->GetDrawModePtr(SECTION_SONGS), displayTypes);
-    UIWidgets::Combobox("Stray Fairies", mItemTrackerWindow->GetDrawModePtr(SECTION_STRAY_FAIRIES), displayTypes);
-    UIWidgets::Combobox("Gold Skulltulas", mItemTrackerWindow->GetDrawModePtr(SECTION_GOLD_SKULLTULAS), displayTypes);
-    UIWidgets::Combobox("Dungeon Items", mItemTrackerWindow->GetDrawModePtr(SECTION_DUNGEON), displayTypes);
-
-    UIWidgets::Checkbox(
-        "Include Maps and Compasses", mItemTrackerWindow->GetIncludeMapsAndCompassesPtr(),
-        UIWidgets::CheckboxOptions().Tooltip("Includes Maps and Compasses with the Dungeon Items section"));
-
-    UIWidgets::Checkbox("Draw Current Ammo",
-                        mItemTrackerWindow->GetCapacityModePtr(ItemTrackerCapacityMode::DrawCurrent));
-
-    UIWidgets::Checkbox("Draw Current Capacity",
-                        mItemTrackerWindow->GetCapacityModePtr(ItemTrackerCapacityMode::DrawCurCapacity));
-
-    UIWidgets::Checkbox("Draw Max Capacity",
-                        mItemTrackerWindow->GetCapacityModePtr(ItemTrackerCapacityMode::DrawMaxCapacity));
-
-    ImGui::PopStyleVar(1);
     ImGui::EndTable();
-
     ImGui::EndChild();
 }
