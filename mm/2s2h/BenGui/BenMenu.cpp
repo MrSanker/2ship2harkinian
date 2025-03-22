@@ -638,6 +638,18 @@ void BenMenu::AddEnhancements() {
                      .Min(0.1f)
                      .Max(3.0f));
 
+    path.column = 3;
+    AddWidget(path, "Mouse", WIDGET_SEPARATOR_TEXT);
+    AddWidget(path, "Mouse Enabled", WIDGET_CVAR_CHECKBOX)
+        .CVar("gEnhancements.Camera.Mouse.Enabled")
+        .Options(CheckboxOptions().DefaultValue(false));
+    AddWidget(path, "Mouse Shielding Enabled", WIDGET_CVAR_CHECKBOX)
+        .CVar("gEnhancements.Mouse.Shielding.Enabled")
+        .Options(CheckboxOptions().DefaultValue(false))
+        .PreFunc([](WidgetInfo& info) {
+            info.isHidden = mBenMenu->disabledMap.at(DISABLE_FOR_MOUSE_OFF).active;
+        });
+
     path = { "Enhancements", "Cheats", 1 };
     AddSidebarEntry("Enhancements", "Cheats", 3);
     AddWidget(path, "Infinite Health", WIDGET_CVAR_CHECKBOX)
@@ -906,14 +918,17 @@ void BenMenu::AddEnhancements() {
             "Re-introduce the pause menu save system. Pressing B in the pause menu will give you the "
             "option to create a persistent Owl Save from your current location.\n\nWhen loading back "
             "into the game, you will be placed either at the entrance of the dungeon you saved in, or "
-            "in South Clock Town."));
+            "in South Clock Town, unless Remember Save Location is enabled."));
+    AddWidget(path, "Remember Save Location", WIDGET_CVAR_CHECKBOX)
+        .CVar("gEnhancements.Saving.RememberSaveLocation")
+        .Options(CheckboxOptions().Tooltip("When loading a save, places Link at the last entrance he went through."));
     AddWidget(path, "Autosave", WIDGET_CVAR_CHECKBOX)
         .CVar("gEnhancements.Saving.Autosave")
         .Callback([](WidgetInfo& info) { RegisterAutosave(); })
         .Options(CheckboxOptions().Tooltip(
             "Automatically create a persistent Owl Save on the chosen interval.\n\nWhen loading "
             "back into the game, you will be placed either at the entrance of the dungeon you "
-            "saved in, or in South Clock Town."));
+            "saved in, or in South Clock Town, unless Remember Save Location is enabled."));
     AddWidget(path, "Autosave Interval: %d minutes", WIDGET_CVAR_SLIDER_INT)
         .CVar("gEnhancements.Saving.AutosaveInterval")
         .PreFunc([](WidgetInfo& info) {
@@ -1644,6 +1659,12 @@ void BenMenu::InitElement() {
         { DISABLE_FOR_FREE_LOOK_OFF,
           { [](disabledInfo& info) -> bool { return !CVarGetInteger("gEnhancements.Camera.FreeLook.Enable", 0); },
             "Free Look is Disabled" } },
+        { DISABLE_FOR_MOUSE_ON,
+          { [](disabledInfo& info) -> bool { return CVarGetInteger("gEnhancements.Camera.Mouse.Enabled", 0); },
+            "Mouse is Enabled" } },
+        { DISABLE_FOR_MOUSE_OFF,
+          { [](disabledInfo& info) -> bool { return !CVarGetInteger("gEnhancements.Camera.Mouse.Enabled", 0); },
+            "Mouse is Disabled" } },
         { DISABLE_FOR_GYRO_OFF,
           { [](disabledInfo& info) -> bool {
                return !CVarGetInteger("gEnhancements.Camera.FirstPerson.GyroEnabled", 0);

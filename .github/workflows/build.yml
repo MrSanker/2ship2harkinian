@@ -1,0 +1,32 @@
+name: aranjuez
+
+on: 
+  push:
+    branches:
+      - intel-celeron-purgatory
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: clonar la repo y eso
+        uses: actions/checkout@v4
+
+      - name: deps2
+        run: |
+          choco install ninja cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+
+      - name: cmake config
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G Ninja
+
+      - name: ninja
+        run: |
+          cd build
+          ninja
